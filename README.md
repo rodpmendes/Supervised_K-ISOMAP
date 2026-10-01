@@ -1,11 +1,51 @@
-# Repository for "Supervised K-ISOMAP: Enhancing Metric Learning via Curvature-Aware Geometry"
-Dimensionality reduction is crucial for transforming high-dimensional data into meaningful representations. We propose Supervised K-ISOMAP, a novel method that integrates curvature-aware geometric information, induced by tangent-space variations along graph paths, and class labels to enhance class separability, offering a deterministic and conceptually simple alternative to existing methods such as Supervised UMAP.
+# Supervised K-ISOMAP
 
-A distinctive feature of Supervised K-ISOMAP is that it blends manifold learning with graph-based metric learning. Specifically, it uses tangent-space variations and class labels to guide a supervised reweighting of neighborhood edges, contracting intra-class connections and expanding inter-class ones. This strategy captures the global structure of the data while improving class separability through the learned graph representation. 
-Unlike traditional methods, Supervised K-ISOMAP leverages tangent-space variations along graph paths to define a discrete notion of curvature for supervised edge reweighting.
+Code associated with the manuscript **“Supervised K-ISOMAP: Enhancing Metric
+Learning via Curvature-Aware Geometry”**, by Rodrigo de P. Mendes and Alexandre
+L. M. Levada.
 
-What sets Supervised K-ISOMAP apart is its conceptual simplicity, determinism, and discriminative power. Given input data and corresponding labels, it requires only two hyperparameters, the number of neighbors and the output dimensionality, and avoids the randomness and heavy parameter tuning typical of methods like Supervised UMAP. 
+Supervised K-ISOMAP is a deterministic, graph-based dimensionality-reduction
+method that combines class information with tangent-space variations to
+construct curvature-aware embeddings.
 
-Extensive experiments on 36 benchmark datasets show that Supervised K-ISOMAP delivers competitive or superior classification performance relative to representative baseline methods, while maintaining interpretability, determinism, and robustness.
+The native method is non-parametric and transductive. The original experiments
+therefore measure class separability within embeddings constructed from the 36
+benchmark datasets.
 
-Our findings demonstrate that incorporating curvature-aware geometry into supervised graph-based representations can significantly improve supervised dimensionality reduction, making Supervised K-ISOMAP a powerful and interpretable alternative in the landscape of metric learning methods.
+## Leakage-free evaluation
+
+The additional out-of-sample implementation is organized as:
+
+```text
+experiments/leakage_free/
+├── sup_kiso_leakage_free.py
+└── supervised_k_isomap.py
+```
+
+It uses ten stratified 50/50 training--test splits. All feature preprocessing,
+embedding construction, external mapping and classifier fitting are performed
+using the training partition only. Test labels are used only for evaluation.
+
+One dataset is excluded because of a singleton class, leaving 35 valid
+datasets. Under the same external RBF protocol, Supervised K-ISOMAP obtains
+57.08% mean balanced accuracy, compared with 47.82% for standard ISOMAP.
+
+The external mapper is used only for this evaluation and is not a native
+component of Supervised K-ISOMAP.
+
+## Requirements
+
+The experiment requires Python 3, NumPy, pandas, SciPy, scikit-learn,
+UMAP-learn and metric-learn. It also requires the project implementation of
+`SupervisedKIsomap` to be available to the script.
+
+From the repository root, run:
+
+```bash
+python experiments/leakage_free/sup_kiso_leakage_free.py
+```
+
+## Citation
+
+If you use this code, please cite the manuscript **“Supervised K-ISOMAP:
+Enhancing Metric Learning via Curvature-Aware Geometry.”**
